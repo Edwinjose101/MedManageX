@@ -8,7 +8,7 @@ import HomePage from './homepage/components/HomePage';
 import Login from './auth/components/Login';
 import Register from './auth/components/Register';
 import Dashboard from './components/Dashboard';
-import PatientPage from './patients/components/PatientPage';
+
 import ProfilePage from './profile/components/ProfilePage';
 import AdminDashboard from './components/admin/AdminDashboard';
 import './App.css';
@@ -32,14 +32,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/patients"
-            element={
-              <ProtectedRoute>
-                <PatientPage />
-              </ProtectedRoute>
-            }
-          />
+         
           <Route
             path="/profile"
             element={
