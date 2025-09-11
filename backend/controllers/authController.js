@@ -1,4 +1,3 @@
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 const User = require('../models/User');
@@ -7,21 +6,62 @@ exports.register = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-  const { name, email, password, role } = req.body;
+  const { fullName, email, password, phone, address, dob, age, gender, bloodGroup } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ msg: 'Email already in use' });
 
-    const saltRounds = parseInt(process.env.SALT_ROUNDS) || 10;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
+    const newUser = new User({
+      fullName,
+      email,
+      password, // plain text password
+      phone,
+      address,
+      dob,
+      age,
+      gender,
+      bloodGroup,
+      role: 'patient',
+    });
 
-    const newUser = new User({ name, email, passwordHash, role });
     await newUser.save();
 
     res.status(201).json({ msg: 'User registered successfully' });
   } catch (err) {
-    console.error(err);
+    console.error('Registration error:', err);
+    return res.status(500).send('Server error');
+  }
+};
+
+exports.adminRegister = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+  const { fullName, email, password, phone, address, role, dob, age, gender, bloodGroup } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ msg: 'Email already in use' });
+
+    const newUser = new User({
+      fullName,
+      email,
+      password, // plain text password
+      phone,
+      address,
+      role,
+      dob,
+      age,
+      gender,
+      bloodGroup,
+    });
+
+    await newUser.save();
+
+    res.status(201).json({ msg: `User with role ${role} registered successfully` });
+  } catch (err) {
+    console.error('Admin registration error:', err);
     return res.status(500).send('Server error');
   }
 };
@@ -36,27 +76,40 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ msg: 'Invalid credentials' });
 
-    const isMatch = await bcrypt.compare(password, user.passwordHash);
-    if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
+    if (password !== user.password) return res.status(400).json({ msg: 'Invalid credentials' });
 
     const payload = { userId: user._id, role: user.role };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+        phone: user.phone,
+        address: user.address,
+        dob: user.dob,
+        age: user.age,
+        gender: user.gender,
+        bloodGroup: user.bloodGroup,
+      },
+    });
   } catch (err) {
-    console.error(err);
+    console.error('Login error:', err);
     return res.status(500).send('Server error');
   }
 };
 
 exports.getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId).select('-passwordHash');
+    const user = await User.findById(req.user.userId).select('-password');
     if (!user) return res.status(404).json({ msg: 'User not found' });
 
     res.json(user);
   } catch (err) {
-    console.error(err);
+    console.error('Get Profile error:', err);
     return res.status(500).send('Server error');
   }
 };

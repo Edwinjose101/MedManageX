@@ -1,12 +1,16 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/auth';
+// Register user
+export const register = (data) => axios.post('/api/auth/register', data);
 
-export const register = (data) => axios.post(`${API_URL}/register`, data);
+// Login user
+export const login = (data) => axios.post('/api/auth/login', data);
 
-export const login = (data) => axios.post(`${API_URL}/login`, data);
-
-export const getProfile = (token) =>
-  axios.get(`${API_URL}/profile`, {
-    headers: { Authorization: `Bearer ${token}` },
+// Get current user profile with token in Authorization header
+export const getProfile = (token) => {
+  return axios.get('/api/auth/profile', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   });
+};

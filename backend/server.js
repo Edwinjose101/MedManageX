@@ -4,11 +4,14 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const patientRoutes = require('./routes/patientRoutes');
+const adminRoutes = require('./routes/adminRoutes'); // Added admin routes import
 
 const app = express();
 
 // Connect to MongoDB
-connectDB();
+connectDB()
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.error('MongoDB connection error:', err));
 
 // Middleware
 app.use(cors());
@@ -17,6 +20,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/patients', patientRoutes);
+app.use('/api/admin', adminRoutes); // Register admin routes
 
 // 404 handler for unmatched routes
 app.use((req, res) => {

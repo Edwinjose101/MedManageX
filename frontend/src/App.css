@@ -1,3 +1,5 @@
+/* General App Styles */
+
 .App {
   text-align: center;
 }
@@ -35,4 +37,189 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Vibrant background for pages */
+
+body, html {
+  height: 100%;
+  margin: 0;
+  background: linear-gradient(120deg, #c2e9fb 0%, #a1c4fd 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Login and Register Containers */
+
+.login-container, .register-container {
+  background: #fff;
+  margin: 60px auto;
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  border-radius: 12px;
+  max-width: 440px;
+  min-width: 320px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.8s ease forwards;
+  color: #21325e;
+}
+
+/* FadeIn Animation */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0; 
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1; 
+    transform: translateY(0);
+  }
+}
+
+/* Headings */
+
+.login-container h1,
+.register-container h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: #3f51b5;
+}
+
+/* Form Labels */
+
+label {
+  display: block;
+  margin-bottom: 1.15rem;
+  font-size: 1rem;
+}
+
+/* Inputs and Selects */
+
+input, select {
+  width: 100%;
+  padding: 0.7rem;
+  margin-top: 0.2rem;
+  border: 1px solid #d0d7de;
+  border-radius: 0.4rem;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+input:focus, select:focus {
+  border-color: #3f51b5;
+  outline: none;
+}
+
+/* Buttons */
+
+button[type="submit"] {
+  background: #3f51b5;
+  color: #fff;
+  border: none;
+  border-radius: 0.4rem;
+  padding: 0.85rem 0;
+  font-size: 1.1rem;
+  width: 100%;
+  margin-top: 1.3rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+button[type="submit"]:hover {
+  background: #283593;
+}
+
+/* Links */
+
+a {
+  color: #3f51b5;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+a:hover {
+  color: #002984;
+}
+
+/* Error Messages */
+
+.error-msg {
+  color: #d32f2f;
+  background: #ffebee;
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.4rem;
+  margin-top: 0.7rem;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* Center paragraph text */
+
+.login-container p,
+.register-container p {
+  text-align: center;
+}
+
+/* Dashboard Specific Styles */
+
+.dashboard-container {
+  max-width: 900px;
+  margin: 60px auto;
+  background: #fff;
+  border-radius: 12px;
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  animation: fadeIn 0.8s ease forwards;
+  color: #21325e;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.dashboard-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: #3f51b5;
+}
+
+.dashboard-container p {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.dashboard-container button,
+.dashboard-container a {
+  display: inline-block;
+  background: #3f51b5;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background 0.3s ease;
+  margin-top: 1rem;
+}
+
+.dashboard-container button:hover,
+.dashboard-container a:hover {
+  background: #283593;
+}
+
+.dashboard-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+}
+
+.dashboard-nav li {
+  margin-bottom: 1rem;
+}
+
+.dashboard-nav a {
+  color: #3f51b5;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 1.1rem;
 }
