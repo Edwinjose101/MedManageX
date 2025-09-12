@@ -7,10 +7,16 @@ import ProtectedRoute from './auth/components/ProtectedRoute';
 import HomePage from './homepage/components/HomePage';
 import Login from './auth/components/Login';
 import Register from './auth/components/Register';
+import DoctorRegister from './auth/components/DoctorRegister';
+
+import ManageDoctors from './admin/ManageDoctors';
+
 import Dashboard from './components/Dashboard';
+import AdminDashboard from './components/admin/AdminDashboard';
+import DoctorDashboard from './components/doctor/DoctorDashboard';
 
 import ProfilePage from './profile/components/ProfilePage';
-import AdminDashboard from './components/admin/AdminDashboard';
+
 import './App.css';
 
 function App() {
@@ -22,6 +28,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/register-doctor" element={<DoctorRegister />} />
 
           {/* Protected Routes */}
           <Route
@@ -32,7 +39,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-         
           <Route
             path="/profile"
             element={
@@ -42,10 +48,27 @@ function App() {
             }
           />
           <Route
+            path="/admin/manage-doctors"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <ManageDoctors />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/admin/dashboard"
             element={
               <ProtectedRoute requiredRole="admin">
                 <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/doctor/dashboard"
+            element={
+              <ProtectedRoute requiredRole="doctor">
+                <DoctorDashboard />
               </ProtectedRoute>
             }
           />

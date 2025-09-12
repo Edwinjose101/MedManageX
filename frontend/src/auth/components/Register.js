@@ -242,8 +242,13 @@ const Register = () => {
           </p>
         )}
       </form>
+
       <p>
         Already have an account? <Link to="/login">Sign in</Link>
+      </p>
+
+      <p>
+        Are you a doctor? <Link to="/register-doctor">Register here</Link>
       </p>
     </div>
   );
