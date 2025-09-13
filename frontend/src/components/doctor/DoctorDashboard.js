@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from '../../api/axios'; // your axios instance with baseURL and token setup
 import { AuthContext } from '../../auth/context/AuthContext'; // adjust path if needed
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
 
 const DoctorDashboard = () => {
@@ -9,7 +9,7 @@ const DoctorDashboard = () => {
   const [doctorProfile, setDoctorProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  
+
   const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -24,7 +24,6 @@ const DoctorDashboard = () => {
         setLoading(false);
       }
     };
-
     fetchProfile();
   }, []);
 
@@ -40,8 +39,8 @@ const DoctorDashboard = () => {
     <div style={{ padding: '20px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1>Welcome, {doctorProfile.fullName}</h1>
-        <button 
-          onClick={handleLogout} 
+        <button
+          onClick={handleLogout}
           className="flex items-center bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition space-x-2"
           style={{ display: 'flex', alignItems: 'center' }}
         >
@@ -51,14 +50,31 @@ const DoctorDashboard = () => {
       </div>
 
       <nav style={{ marginBottom: '15px' }}>
-        <button onClick={() => setActiveSection('profile')} disabled={activeSection === 'profile'}>
+        <button
+          onClick={() => setActiveSection('profile')}
+          disabled={activeSection === 'profile'}
+        >
           Profile
         </button>
-        <button onClick={() => setActiveSection('appointments')} disabled={activeSection === 'appointments'}>
+        <button
+          onClick={() => setActiveSection('appointments')}
+          disabled={activeSection === 'appointments'}
+        >
           Appointments
         </button>
-        <button onClick={() => setActiveSection('messages')} disabled={activeSection === 'messages'}>
+        <button
+          onClick={() => setActiveSection('messages')}
+          disabled={activeSection === 'messages'}
+        >
           Messages & Alerts
+        </button>
+
+        {/* New button for Patients List */}
+        <button
+          onClick={() => navigate('/doctor/patients')}
+          style={{ marginLeft: '10px' }}
+        >
+          My Patients
         </button>
       </nav>
 

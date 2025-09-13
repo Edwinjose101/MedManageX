@@ -15,6 +15,9 @@ import Dashboard from './components/Dashboard';
 import AdminDashboard from './components/admin/AdminDashboard';
 import DoctorDashboard from './components/doctor/DoctorDashboard';
 
+import DoctorPatients from './components/doctor/DoctorPatients';
+import PatientRecords from './components/doctor/PatientRecords';
+
 import ProfilePage from './profile/components/ProfilePage';
 
 import './App.css';
@@ -69,6 +72,25 @@ function App() {
             element={
               <ProtectedRoute requiredRole="doctor">
                 <DoctorDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* New Doctor Patients List */}
+          <Route
+            path="/doctor/patients"
+            element={
+              <ProtectedRoute requiredRole="doctor">
+                <DoctorPatients />
+              </ProtectedRoute>
+            }
+          />
+          {/* New Patient Records View and Add */}
+          <Route
+            path="/doctor/patients/:id"
+            element={
+              <ProtectedRoute requiredRole="doctor">
+                <PatientRecords />
               </ProtectedRoute>
             }
           />
