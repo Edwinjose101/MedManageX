@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../auth/context/AuthContext'; // Adjust path as needed
+import { AuthContext } from '../../auth/context/AuthContext'; 
 import { LogOut } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -27,6 +27,12 @@ const AdminDashboard = () => {
             <li><Link to="/billing">Billing</Link></li>
             <li><Link to="/reports">Reports</Link></li>
             <li><Link to="/settings">Settings</Link></li>
+            {/* New Nav Link */}
+            <li>
+              <Link to="/admin/add-medical-record" style={{ fontWeight: 'bold', color: '#2563eb' }}>
+                Add Medical Record
+              </Link>
+            </li>
           </ul>
         </nav>
       </aside>
@@ -34,16 +40,16 @@ const AdminDashboard = () => {
       {/* Main Content Area */}
       <main className="main-content">
         {/* Topbar / Header */}
-        <header className="header" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <header className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h1>Dashboard Overview</h1>
-          
+
           {/* Logout button */}
-          <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             {user && <span>Welcome, <strong>{user.fullName}</strong></span>}
             <button
               onClick={handleLogout}
               className="flex items-center bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition space-x-2"
-              style={{display: 'flex', alignItems: 'center'}}
+              style={{ display: 'flex', alignItems: 'center' }}
             >
               <LogOut size={16} />
               <span>Logout</span>
@@ -78,11 +84,14 @@ const AdminDashboard = () => {
         </section>
 
         {/* Quick Actions */}
-        <section className="quick-actions">
-          <button>Add New Patient</button>
-          <button>Add New Doctor</button>
-          <button>Schedule Appointment</button>
-          {/* More quick action buttons */}
+        <section className="quick-actions" style={{ marginTop: '1rem' }}>
+          <button onClick={() => navigate('/patients')}>Add New Patient</button>
+          <button onClick={() => navigate('/admin/manage-doctors')}>Add New Doctor</button>
+          <button onClick={() => navigate('/appointments')}>Schedule Appointment</button>
+          {/* New Quick Action for Add Medical Record */}
+          <button onClick={() => navigate('/admin/add-medical-record')} style={{ fontWeight: 'bold', backgroundColor: '#2563eb', color: 'white' }}>
+            Add Medical Record
+          </button>
         </section>
       </main>
     </div>

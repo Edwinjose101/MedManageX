@@ -13,6 +13,8 @@ import ManageDoctors from './admin/ManageDoctors';
 
 import Dashboard from './components/Dashboard';
 import AdminDashboard from './components/admin/AdminDashboard';
+import AdminAddMedicalRecord from './components/admin/AdminAddMedicalRecord'; // Import added
+
 import DoctorDashboard from './components/doctor/DoctorDashboard';
 
 import DoctorPatients from './components/doctor/DoctorPatients';
@@ -63,6 +65,15 @@ function App() {
             element={
               <ProtectedRoute requiredRole="admin">
                 <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          {/* New Route for Admin Add Medical Record */}
+          <Route
+            path="/admin/add-medical-record"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminAddMedicalRecord />
               </ProtectedRoute>
             }
           />

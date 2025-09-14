@@ -21,4 +21,13 @@ router.patch('/approve-doctor/:id', adminController.approveDoctor);
 // Reject or delete a pending doctor by ID (optional)
 router.delete('/reject-doctor/:id', adminController.rejectDoctor);
 
+// Get all patients for admin dropdown
+router.get('/patients', adminController.getAllPatients);
+
+// Get all approved doctors for admin dropdown
+router.get('/doctors', adminController.getAllDoctors);
+
+// Add medical record by admin
+router.post('/medical-records', adminController.addMedicalRecordByAdmin);
+
 module.exports = router;

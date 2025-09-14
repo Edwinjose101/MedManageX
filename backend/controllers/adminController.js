@@ -1,5 +1,7 @@
 const User = require('../models/User');
+const MedicalRecord = require('../models/MedicalRecord');
 
+// Get all users
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select('-password');
@@ -38,7 +40,7 @@ exports.approveDoctor = async (req, res) => {
   }
 };
 
-// Optional: Reject or delete a pending doctor registration
+// Reject or delete a pending doctor registration
 exports.rejectDoctor = async (req, res) => {
   const doctorId = req.params.id;
   try {
@@ -51,5 +53,65 @@ exports.rejectDoctor = async (req, res) => {
   } catch (err) {
     console.error('Error rejecting doctor:', err);
     res.status(500).send('Server error');
+  }
+};
+
+// Get all patients for admin dropdown
+exports.getAllPatients = async (req, res) => {
+  try {
+    const patients = await User.find({ role: 'patient' }).select('-password');
+    res.json(patients);
+  } catch (err) {
+    console.error('Error fetching patients:', err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
+
+// Get all approved doctors for admin dropdown
+exports.getAllDoctors = async (req, res) => {
+  try {
+    const doctors = await User.find({ role: 'doctor', isApproved: true }).select('-password');
+    res.json(doctors);
+  } catch (err) {
+    console.error('Error fetching doctors:', err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
+
+// Add medical record by admin
+exports.addMedicalRecordByAdmin = async (req, res) => {
+  try {
+    const { patientId, department, doctorId, notes } = req.body;
+
+    if (!patientId || !department || !notes || !notes.trim()) {
+      return res.status(400).json({ msg: 'patientId, department and notes are required' });
+    }
+
+    const patient = await User.findById(patientId);
+    if (!patient || patient.role !== 'patient') {
+      return res.status(404).json({ msg: 'Patient not found or invalid' });
+    }
+
+    let doctor = null;
+    if (doctorId) {
+      doctor = await User.findById(doctorId);
+      if (!doctor || doctor.role !== 'doctor' || !doctor.isApproved) {
+        return res.status(404).json({ msg: 'Doctor not found, invalid, or not approved' });
+      }
+    }
+
+    const newRecord = new MedicalRecord({
+      patientId,
+      department,
+      doctorId: doctor ? doctor._id : null,
+      notes,
+    });
+
+    await newRecord.save();
+
+    res.status(201).json({ msg: 'Medical record added successfully', record: newRecord });
+  } catch (err) {
+    console.error('Error adding medical record by admin:', err);
+    res.status(500).json({ msg: 'Server error' });
   }
 };

@@ -10,7 +10,7 @@ instance.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-  return config;
+  return config; // Always return config, even if no token
 });
 
 export default instance;
