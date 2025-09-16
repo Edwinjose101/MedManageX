@@ -63,7 +63,11 @@ const PatientRecords = () => {
           <li key={rec._id}>
             <strong>{new Date(rec.createdAt).toLocaleString()}</strong>
             <p>{rec.notes}</p>
-            <small>By Dr. {rec.doctorId?.fullName || 'Unknown'}</small>
+            <small>
+              {rec.doctorId
+                ? `By Dr. ${rec.doctorId.fullName || 'Unknown'}`
+                : 'By Administrator'}
+            </small>
           </li>
         ))}
       </ul>
@@ -87,3 +91,4 @@ const PatientRecords = () => {
 };
 
 export default PatientRecords;
+
