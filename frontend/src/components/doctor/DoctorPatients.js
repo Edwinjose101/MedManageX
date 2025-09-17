@@ -33,7 +33,14 @@ const DoctorPatients = () => {
       <ul>
         {patients.map((patient) => (
           <li key={patient._id}>
-            {patient.fullName} - <button onClick={() => navigate(`/doctor/patients/${patient._id}`)}>View Records</button>
+            {patient.fullName}
+            {' '}
+            <button onClick={() => navigate(`/doctor/patients/${patient._id}`)}>
+              View Records
+            </button>
+            <button onClick={() => navigate(`/doctor/patients/${patient._id}/add-record`)}>
+              Add Medical Record
+            </button>
           </li>
         ))}
       </ul>
@@ -42,3 +49,4 @@ const DoctorPatients = () => {
 };
 
 export default DoctorPatients;
+

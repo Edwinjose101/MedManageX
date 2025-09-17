@@ -22,7 +22,7 @@ exports.getMyPatients = async (req, res) => {
   }
 };
 
-// List medical records for a patient (filtered by doctor's department), with doctor name populated
+// List medical records for a patient (filtered by doctor's department), exclude admin-created records, with doctor name populated
 exports.getPatientRecords = async (req, res) => {
   try {
     const doctor = await User.findById(req.user.userId);
@@ -38,11 +38,15 @@ exports.getPatientRecords = async (req, res) => {
       return res.status(404).json({ msg: 'Patient not found' });
     }
 
-    // Fetch records for this patient and department, sorted by date, with doctor fullName populated
-    const records = await MedicalRecord.find({ patientId, department: doctor.specialty })
+    // Fetch records for this patient and department, exclude admin created records
+    const records = await MedicalRecord.find({
+      patientId,
+      department: doctor.specialty,
+      createdByRole: { $ne: 'admin' } // exclude records created by admin
+    })
       .sort('createdAt')
       .populate('doctorId', 'fullName');
-      
+
     res.json(records);
   } catch (err) {
     console.error('Error fetching medical records:', err);
@@ -76,6 +80,7 @@ exports.addMedicalRecord = async (req, res) => {
       department: doctor.specialty,
       doctorId: doctor._id,
       notes,
+      createdByRole: 'doctor',
     });
 
     await newRecord.save();

@@ -78,7 +78,7 @@ exports.getAllDoctors = async (req, res) => {
   }
 };
 
-// Add medical record by admin
+// Add medical record by admin, with createdByRole
 exports.addMedicalRecordByAdmin = async (req, res) => {
   try {
     const { patientId, department, doctorId, notes } = req.body;
@@ -105,6 +105,7 @@ exports.addMedicalRecordByAdmin = async (req, res) => {
       department,
       doctorId: doctor ? doctor._id : null,
       notes,
+      createdByRole: 'admin',  
     });
 
     await newRecord.save();

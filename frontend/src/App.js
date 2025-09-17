@@ -13,12 +13,13 @@ import ManageDoctors from './admin/ManageDoctors';
 
 import Dashboard from './components/Dashboard';
 import AdminDashboard from './components/admin/AdminDashboard';
-import AdminAddMedicalRecord from './components/admin/AdminAddMedicalRecord'; // Import added
+import AdminAddMedicalRecord from './components/admin/AdminAddMedicalRecord';
 
 import DoctorDashboard from './components/doctor/DoctorDashboard';
 
 import DoctorPatients from './components/doctor/DoctorPatients';
 import PatientRecords from './components/doctor/PatientRecords';
+import AddMedicalRecordDoctor from './components/doctor/AddMedicalRecordDoctor'; // NEW
 
 import ProfilePage from './profile/components/ProfilePage';
 
@@ -68,7 +69,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* New Route for Admin Add Medical Record */}
+          {/* Admin Add Medical Record */}
           <Route
             path="/admin/add-medical-record"
             element={
@@ -87,7 +88,7 @@ function App() {
             }
           />
 
-          {/* New Doctor Patients List */}
+          {/* Doctor Patients List */}
           <Route
             path="/doctor/patients"
             element={
@@ -96,12 +97,21 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* New Patient Records View and Add */}
+          {/* Patient Records View */}
           <Route
             path="/doctor/patients/:id"
             element={
               <ProtectedRoute requiredRole="doctor">
                 <PatientRecords />
+              </ProtectedRoute>
+            }
+          />
+          {/* NEW: Doctor Add Medical Record */}
+          <Route
+            path="/doctor/patients/:id/add-record"
+            element={
+              <ProtectedRoute requiredRole="doctor">
+                <AddMedicalRecordDoctor />
               </ProtectedRoute>
             }
           />
