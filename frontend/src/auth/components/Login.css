@@ -1,0 +1,163 @@
+.min-h-screen {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #c7d2fe 0%, #93c5fd 50%, #14b8a6 100%);
+}
+
+.bg-gradient-to-tr {
+  background: inherit; /* Already covered in .min-h-screen, but needed if separate */
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.p-4 {
+  padding: 2rem;
+}
+
+.bg-white {
+  background: #fff;
+}
+
+.shadow-xl {
+  box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.10), 0 10px 10px -5px rgba(59, 130, 246, 0.04) !important;
+}
+
+.rounded-lg {
+  border-radius: 1rem;
+}
+
+.p-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  padding-left: 2rem;
+  padding-right: 3.5rem;  /* same value ensures perfect symmetry */
+}
+
+.max-w-md {
+  max-width: 28rem;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-3xl {
+  font-size: 2rem;
+  line-height: 2.5rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-indigo-600 {
+  color: #4f46e5;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
+}
+
+.space-y-6 > * + * {
+  margin-top: 1.5rem;
+}
+
+.text-gray-700 {
+  color: #232946;;
+}
+
+.font-semibold {
+  font-weight: 400;
+}
+
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+
+label.flex {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  color: #000000;
+}
+
+.mr-2 {
+  margin-right: 0.5rem;
+}
+
+input[type="email"], input[type="password"] {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.4rem;
+  font-size: 1rem;
+  transition: border 0.2s, background 0.2s;
+  margin-top: 0.25rem;
+}
+
+input[type="email"]:focus, input[type="password"]:focus {
+  border: 1.5px solid #4f46e5;
+  background: #f1f7fe;
+  outline: none;
+}
+
+.text-red-600 {
+  color: #dc2626;
+}
+.mt-6 { margin-top: 1.5rem; }
+
+button[type="submit"] {
+  background: #4f46e5;
+  color: #fff;
+  font-weight: 700;
+  padding: 0.9rem 0;
+  border: none;
+  border-radius: 0.6rem;
+  font-size: 1.08rem;
+  margin-top: 1.5rem;
+  margin-left: 3.25rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 80%;
+}
+button[type="submit"]:hover:not([disabled]) {
+  background: #3730a3;
+}
+button[type="submit"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.text-gray-600 {
+  color: #6b7280;
+}
+
+.text-indigo-600 {
+  color: #4f46e5;
+}
+
+.hover\:underline:hover {
+  text-decoration: underline;
+}
+.font-semibold {
+  font-weight: 600;
+}
+
+/* Responsive for small screens */
+@media (max-width: 500px) {
+  .p-8 { padding: 1rem; }
+  .max-w-md { max-width: 96vw; }
+}

@@ -1,75 +1,85 @@
-import React, { useState } from 'react';
-import { register } from '../api/auth';
-import { useNavigate, Link } from 'react-router-dom';
-import { User, Mail, Lock, Phone, Home } from 'lucide-react';
+import React, { useState } from "react";
+import { register } from "../api/auth";
+import { useNavigate, Link } from "react-router-dom";
+import {
+  User,
+  Mail,
+  Lock,
+  Phone,
+  Home,
+  Calendar,
+  CalendarClock,
+  Droplet,
+  UserRound,
+} from "lucide-react";
+import "./Register.css";
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    fullName: '',
-    dob: '',
-    age: '',
-    gender: '',
-    bloodGroup: '',
-    email: '',
-    password: '',
-    phone: '',
-    address: '',
-    role: 'patient',
+    fullName: "",
+    dob: "",
+    age: "",
+    gender: "",
+    bloodGroup: "",
+    email: "",
+    password: "",
+    phone: "",
+    address: "",
+    role: "patient",
   });
 
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const validateForm = () => {
     if (!formData.fullName.trim()) {
-      setError('Full name is required');
+      setError("Full name is required");
       return false;
     }
     if (!formData.dob) {
-      setError('Date of birth is required');
+      setError("Date of birth is required");
       return false;
     }
     if (!formData.age || isNaN(formData.age)) {
-      setError('Valid age is required');
+      setError("Valid age is required");
       return false;
     }
     if (!formData.gender) {
-      setError('Gender is required');
+      setError("Gender is required");
       return false;
     }
     if (!formData.bloodGroup) {
-      setError('Blood group is required');
+      setError("Blood group is required");
       return false;
     }
     if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      setError('Valid email is required');
+      setError("Valid email is required");
       return false;
     }
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError("Password must be at least 6 characters");
       return false;
     }
     return true;
   };
 
   const handleChange = (e) => {
-    setError('');
+    setError("");
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     if (!validateForm()) return;
-
     setLoading(true);
     try {
       await register(formData);
-      navigate('/login');
+      navigate("/login");
     } catch (err) {
-      setError(err.response?.data?.msg || 'Registration failed');
+      setError(err.response?.data?.msg || "Registration failed");
     } finally {
       setLoading(false);
     }
@@ -77,11 +87,16 @@ const Register = () => {
 
   return (
     <div className="register-container" aria-live="polite">
-      <h1>Join the Hospital Management System</h1>
+      <h1>MedManageX Registration</h1>
       <form onSubmit={handleSubmit} noValidate>
         {/* Full Name */}
         <label htmlFor="fullName">
-          <User /> Full Name
+          <span className="label-row">
+            <span className="icon">
+              <User />
+            </span>
+            <span className="label-text">Full Name</span>
+          </span>
           <input
             type="text"
             id="fullName"
@@ -97,7 +112,12 @@ const Register = () => {
 
         {/* Date of Birth */}
         <label htmlFor="dob">
-          Date of Birth
+          <span className="label-row">
+            <span className="icon">
+              <Calendar />
+            </span>
+            <span className="label-text">Date of Birth</span>
+          </span>
           <input
             type="date"
             id="dob"
@@ -112,7 +132,12 @@ const Register = () => {
 
         {/* Age */}
         <label htmlFor="age">
-          Age
+          <span className="label-row">
+            <span className="icon">
+              <CalendarClock />
+            </span>
+            <span className="label-text">Age</span>
+          </span>
           <input
             type="number"
             id="age"
@@ -129,7 +154,12 @@ const Register = () => {
 
         {/* Gender */}
         <label htmlFor="gender">
-          Gender
+          <span className="label-row">
+            <span className="icon">
+              <UserRound />
+            </span>
+            <span className="label-text">Gender</span>
+          </span>
           <select
             id="gender"
             name="gender"
@@ -148,7 +178,12 @@ const Register = () => {
 
         {/* Blood Group */}
         <label htmlFor="bloodGroup">
-          Blood Group
+          <span className="label-row">
+            <span className="icon">
+              <Droplet />
+            </span>
+            <span className="label-text">Blood Group</span>
+          </span>
           <select
             id="bloodGroup"
             name="bloodGroup"
@@ -172,7 +207,12 @@ const Register = () => {
 
         {/* Email */}
         <label htmlFor="email">
-          <Mail /> Email
+          <span className="label-row">
+            <span className="icon">
+              <Mail />
+            </span>
+            <span className="label-text">Email</span>
+          </span>
           <input
             type="email"
             id="email"
@@ -188,7 +228,12 @@ const Register = () => {
 
         {/* Password */}
         <label htmlFor="password">
-          <Lock /> Password
+          <span className="label-row">
+            <span className="icon">
+              <Lock />
+            </span>
+            <span className="label-text">Password</span>
+          </span>
           <input
             type="password"
             id="password"
@@ -204,7 +249,12 @@ const Register = () => {
 
         {/* Phone (optional) */}
         <label htmlFor="phone">
-          <Phone /> Phone (Optional)
+          <span className="label-row">
+            <span className="icon">
+              <Phone />
+            </span>
+            <span className="label-text">Phone (Optional)</span>
+          </span>
           <input
             type="tel"
             id="phone"
@@ -218,7 +268,12 @@ const Register = () => {
 
         {/* Address (optional) */}
         <label htmlFor="address">
-          <Home /> Address (Optional)
+          <span className="label-row">
+            <span className="icon">
+              <Home />
+            </span>
+            <span className="label-text">Address (Optional)</span>
+          </span>
           <input
             type="text"
             id="address"
@@ -234,7 +289,7 @@ const Register = () => {
         <input type="hidden" name="role" value="patient" />
 
         <button type="submit" disabled={loading} aria-busy={loading}>
-          {loading ? 'Registering...' : 'Register'}
+          {loading ? "Registering..." : "Register"}
         </button>
         {error && (
           <p className="error-msg" role="alert" aria-live="assertive">
@@ -246,7 +301,6 @@ const Register = () => {
       <p>
         Already have an account? <Link to="/login">Sign in</Link>
       </p>
-
       <p>
         Are you a doctor? <Link to="/register-doctor">Register here</Link>
       </p>

@@ -1,9 +1,11 @@
-import React, { useContext } from 'react';
-import { AuthContext } from '../../auth/context/AuthContext';
-import { User } from 'lucide-react';
+import React, { useContext } from "react";
+import { AuthContext } from "../../auth/context/AuthContext";
+import { User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {
   const { user, loading } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   if (loading) {
     return <div>Loading profile...</div>;
@@ -27,36 +29,46 @@ const ProfilePage = () => {
             <User size={48} className="text-gray-400" />
           </div>
         )}
-        <h1 className="text-3xl font-bold">{user.fullName || user.name || 'No Name'}</h1>
+        <h1 className="text-3xl font-bold">
+          {user.fullName || user.name || "No Name"}
+        </h1>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700 mb-6">
         <div>
-          <strong>Full Name:</strong> {user.fullName || user.name || 'Not provided'}
+          <strong>Full Name:</strong>{" "}
+          {user.fullName || user.name || "Not provided"}
         </div>
         <div>
-          <strong>Email:</strong> {user.email || 'Not provided'}
+          <strong>Email:</strong> {user.email || "Not provided"}
         </div>
         <div>
-          <strong>Phone:</strong> {user.phone || 'Not provided'}
+          <strong>Phone:</strong> {user.phone || "Not provided"}
         </div>
         <div>
-          <strong>Address:</strong> {user.address || 'Not provided'}
+          <strong>Address:</strong> {user.address || "Not provided"}
         </div>
         <div>
-          <strong>Date of Birth:</strong>{' '}
-          {user.dob ? new Date(user.dob).toLocaleDateString() : 'Not provided'}
+          <strong>Date of Birth:</strong>{" "}
+          {user.dob ? new Date(user.dob).toLocaleDateString() : "Not provided"}
         </div>
         <div>
-          <strong>Age:</strong> {user.age || 'Not provided'}
+          <strong>Age:</strong> {user.age || "Not provided"}
         </div>
         <div>
-          <strong>Gender:</strong> {user.gender || 'Not provided'}
+          <strong>Gender:</strong> {user.gender || "Not provided"}
         </div>
         <div>
-          <strong>Blood Group:</strong> {user.bloodGroup || 'Not provided'}
+          <strong>Blood Group:</strong> {user.bloodGroup || "Not provided"}
         </div>
       </div>
+
+      <button
+        onClick={() => navigate("/patient/profile/edit")}
+        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
+      >
+        Edit Profile
+      </button>
     </div>
   );
 };

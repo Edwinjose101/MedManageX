@@ -1,53 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import axios from '../../api/axios';
+import React, { useState, useEffect } from "react";
+import axios from "../../api/axios";
 
 const AdminAddMedicalRecord = () => {
   const [patients, setPatients] = useState([]);
   const [doctors, setDoctors] = useState([]);
-  const [departments, setDepartments] = useState([
-    'Cardiology',
-    'Neurology',
-    'Orthopedics',
-    'Pediatrics',
-    'General Surgery',
-    'Dermatology',
-    'Psychiatry'
-  ]); // Example departments, you can fetch from API later
+  // Removed setDepartments since it is not used.
+  const departments = [
+    "Cardiology",
+    "Neurology",
+    "Orthopedics",
+    "Pediatrics",
+    "General Surgery",
+    "Dermatology",
+    "Psychiatry",
+  ]; // Example departments, you can fetch from API later
 
   const [form, setForm] = useState({
-    patientId: '',
-    department: '',
-    doctorId: '',
-    notes: '',
+    patientId: "",
+    department: "",
+    doctorId: "",
+    notes: "",
   });
 
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     // Fetch patients list (only patients)
     const fetchPatients = async () => {
       try {
-        const { data } = await axios.get('/admin/patients'); // You may need to create this endpoint or reuse existing
+        const { data } = await axios.get("/admin/patients"); // You may need to create this endpoint or reuse existing
         setPatients(data);
       } catch {
-        setError('Failed to load patients');
+        setError("Failed to load patients");
       }
     };
 
     // Fetch doctors list (only doctors)
     const fetchDoctors = async () => {
       try {
-        const { data } = await axios.get('/admin/doctors'); // You may need to create this endpoint or reuse existing
+        const { data } = await axios.get("/admin/doctors"); // You may need to create this endpoint or reuse existing
         setDoctors(data);
       } catch {
-        setError('Failed to load doctors');
+        setError("Failed to load doctors");
       }
     };
 
     fetchPatients();
     fetchDoctors();
-  }, []);
+  }, []); // No changes needed here for useEffect dependencies
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -55,25 +56,25 @@ const AdminAddMedicalRecord = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     if (!form.patientId || !form.department || !form.notes.trim()) {
-      setError('Patient, Department and Notes are required.');
+      setError("Patient, Department and Notes are required.");
       return;
     }
 
     try {
-      await axios.post('/admin/medical-records', {
+      await axios.post("/admin/medical-records", {
         patientId: form.patientId,
         department: form.department,
         doctorId: form.doctorId || null,
         notes: form.notes,
       });
-      setSuccess('Medical record added successfully!');
-      setForm({ patientId: '', department: '', doctorId: '', notes: '' });
+      setSuccess("Medical record added successfully!");
+      setForm({ patientId: "", department: "", doctorId: "", notes: "" });
     } catch (err) {
-      setError(err.response?.data?.msg || 'Failed to add medical record');
+      setError(err.response?.data?.msg || "Failed to add medical record");
     }
   };
 
@@ -81,13 +82,18 @@ const AdminAddMedicalRecord = () => {
     <div>
       <h2>Add Medical Record</h2>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {success && <p style={{ color: "green" }}>{success}</p>}
 
       <form onSubmit={handleSubmit}>
         <label>
           Patient:
-          <select name="patientId" value={form.patientId} onChange={handleChange} required>
+          <select
+            name="patientId"
+            value={form.patientId}
+            onChange={handleChange}
+            required
+          >
             <option value="">Select Patient</option>
             {patients.map((p) => (
               <option key={p._id} value={p._id}>
@@ -100,7 +106,12 @@ const AdminAddMedicalRecord = () => {
 
         <label>
           Department:
-          <select name="department" value={form.department} onChange={handleChange} required>
+          <select
+            name="department"
+            value={form.department}
+            onChange={handleChange}
+            required
+          >
             <option value="">Select Department</option>
             {departments.map((d) => (
               <option key={d} value={d}>
