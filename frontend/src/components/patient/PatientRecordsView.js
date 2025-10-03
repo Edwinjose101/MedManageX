@@ -1,156 +1,113 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../api/axios";
 
+// Utility to group records by department
+const groupByDepartment = (records) => {
+  const grouped = {};
+  records.forEach((record) => {
+    const dept = record.department || "Other";
+    if (!grouped[dept]) grouped[dept] = [];
+    grouped[dept].push(record);
+  });
+  return grouped;
+};
+
 const PatientRecordsView = () => {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [selectedRecordIndex, setSelectedRecordIndex] = useState(null);
+  const [expandedDepts, setExpandedDepts] = useState({});
 
   useEffect(() => {
     const fetchRecords = async () => {
       try {
         const { data } = await axios.get("/patient/records");
         setRecords(data.records);
-        if (data.length > 0) setSelectedRecordIndex(0);
       } catch (err) {
         setError("Failed to load medical records");
       } finally {
         setLoading(false);
       }
     };
-
     fetchRecords();
   }, []);
+
+  // Group records by department for display
+  const grouped = groupByDepartment(records);
 
   if (loading) return <p>Loading records...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
   if (records.length === 0) return <p>No medical records available.</p>;
 
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(120deg, #e0f2fe 0%, #f9fafb 100%)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "flex-start",
-        paddingTop: 64,
-        paddingLeft: 16,
-        paddingRight: 16,
-        width: "100vw",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          gap: 40,
-          width: "100%",
-          maxWidth: 900,
-          margin: "0 auto",
-          alignItems: "flex-start",
-        }}
-      >
-        {/* Dates List */}
-        <div
-          style={{
-            width: 220,
-            border: "1px solid #cbd5e1",
-            borderRadius: 12,
-            overflowY: "auto",
-            padding: 16,
-            boxShadow: "0 4px 6px rgba(100, 116, 139, 0.1)",
-            background: "white",
-          }}
-          aria-label="Dates list"
-        >
-          <h3 style={{ marginTop: 0, marginBottom: 16, color: "#1e3a8a" }}>
-            Medical Records
-          </h3>
-          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-            {records.map((record, index) => (
-              <li
-                key={record._id}
-                onClick={() => setSelectedRecordIndex(index)}
-                style={{
-                  padding: "10px 12px",
-                  cursor: "pointer",
-                  borderRadius: 8,
-                  backgroundColor:
-                    index === selectedRecordIndex ? "#bfdbfe" : "transparent",
-                  fontWeight: index === selectedRecordIndex ? "700" : "normal",
-                  marginBottom: 8,
-                  userSelect: "none",
-                  transition: "background-color 0.2s ease",
-                  color: "#1e40af",
-                }}
-              >
-                {new Date(record.createdAt).toLocaleDateString(undefined, {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })}
-              </li>
-            ))}
-          </ul>
-        </div>
+  const handleToggle = (dept) => {
+    setExpandedDepts((prev) => ({
+      ...prev,
+      [dept]: !prev[dept],
+    }));
+  };
 
-        {/* Details Pane */}
-        <div
-          style={{
-            flexGrow: 1,
-            border: "1px solid #cbd5e1",
-            borderRadius: 12,
-            padding: 24,
-            boxShadow: "0 4px 6px rgba(100, 116, 139, 0.1)",
-            overflowY: "auto",
-            background: "white",
-            color: "#334155",
-            height: "600px",
-          }}
-          aria-label="Record details"
-        >
-          <h3
+  return (
+    <div style={{ maxWidth: 1200, margin: "30px auto", padding: "0 12px" }}>
+      <h2 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: 18 }}>
+        Patient Medical Records
+      </h2>
+
+      {Object.keys(grouped).map((dept) => (
+        <div key={dept} style={{ marginBottom: 30 }}>
+          {/* Collapsible Section Header */}
+          <div
             style={{
-              borderBottom: "2px solid #bfdbfe",
-              paddingBottom: 8,
-              marginBottom: 20,
-              color: "#1e3a8a",
+              background: "#2563eb",
+              color: "white",
+              padding: "12px 26px",
+              fontWeight: "bold",
+              fontSize: "1.18rem",
+              borderRadius: "8px 8px 0 0",
+              cursor: "pointer",
+              userSelect: "none",
+              border: "1px solid #2563eb"
             }}
+            onClick={() => handleToggle(dept)}
           >
-            Record Details
-          </h3>
-          {selectedRecordIndex !== null ? (
-            <>
-              <p>
-                <strong>Date and Time:</strong>{" "}
-                {new Date(
-                  records[selectedRecordIndex].createdAt
-                ).toLocaleString()}
-              </p>
-              <p>
-                <strong>By:</strong>{" "}
-                {records[selectedRecordIndex].createdByRole === "admin"
-                  ? "Assigned by Administrator"
-                  : records[selectedRecordIndex].doctorId
-                  ? `Dr. ${
-                      records[selectedRecordIndex].doctorId.fullName ||
-                      "Unknown"
-                    }`
-                  : "By Administrator"}
-              </p>
-              <p>
-                <strong>Notes:</strong>
-                <br />
-                {records[selectedRecordIndex].notes}
-              </p>
-            </>
-          ) : (
-            <p>Select a record to view details</p>
+            {dept} ({grouped[dept].length}){" "}
+            <span style={{ marginLeft: 12 }}>
+              {expandedDepts[dept] !== false ? "\u25BC" : "\u25B6"}
+            </span>
+          </div>
+          {expandedDepts[dept] !== false && (
+            <div style={{ border: "1px solid #d1e4fd", borderTop: 0, borderRadius: "0 0 8px 8px", background: "white", overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <thead>
+                  <tr style={{ background: "#eff6ff" }}>
+                    <th style={{ padding: 12, border: "1px solid #eef2f7", fontSize: 16, textAlign: "left" }}>Doctor</th>
+                    <th style={{ padding: 12, border: "1px solid #eef2f7", fontSize: 16, textAlign: "left" }}>Date</th>
+                    <th style={{ padding: 12, border: "1px solid #eef2f7", fontSize: 16, textAlign: "left" }}>Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {grouped[dept].map((rec) => (
+                    <tr key={rec._id}>
+                      <td style={{ padding: 10, border: "1px solid #eef2f7" }}>
+                        {rec.doctorId?.fullName || rec.doctor || "N/A"}
+                      </td>
+                      <td style={{ padding: 10, border: "1px solid #eef2f7" }}>
+                        {new Date(rec.createdAt).toLocaleDateString(undefined, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </td>
+                      <td style={{ padding: 10, border: "1px solid #eef2f7" }}>
+                        {rec.notes}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
-      </div>
+      ))}
     </div>
   );
 };
