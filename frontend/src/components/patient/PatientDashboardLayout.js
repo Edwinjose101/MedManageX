@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../auth/context/AuthContext";
-import { User, FileText, LogOut } from "lucide-react";
+import { User, FileText, LogOut, Calendar } from "lucide-react";
 
 const Avatar = ({ src, alt }) => (
   <div
@@ -77,7 +77,7 @@ const PatientDashboardLayout = () => {
               <FileText size={18} /> My Medical Records
             </Link>
           </li>
-          <li>
+          <li style={{ marginBottom: 12 }}>
             <Link
               to="/patient/profile"
               style={{
@@ -89,6 +89,35 @@ const PatientDashboardLayout = () => {
               }}
             >
               <User size={18} /> View Profile
+            </Link>
+          </li>
+          {/* New Appointment Scheduling Links */}
+          <li style={{ marginBottom: 12 }}>
+            <Link
+              to="/patient/schedule-appointment"
+              style={{
+                color: "#3182ce",
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              <Calendar size={18} /> Schedule Appointment
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/patient/my-appointments"
+              style={{
+                color: "#3182ce",
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              <Calendar size={18} /> My Appointments
             </Link>
           </li>
         </ul>
@@ -123,3 +152,4 @@ const PatientDashboardLayout = () => {
 };
 
 export default PatientDashboardLayout;
+

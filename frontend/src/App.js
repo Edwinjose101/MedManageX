@@ -16,12 +16,15 @@ import AdminPatientDetails from "./components/admin/AdminPatientDetails";
 import DoctorDashboard from "./components/doctor/DoctorDashboard";
 import DoctorPatients from "./components/doctor/DoctorPatients";
 import PatientRecords from "./components/doctor/PatientRecords";
-import AddMedicalRecord from "./components/doctor/AddMedicalRecordDoctor"; // Correct import
+import AddMedicalRecord from "./components/doctor/AddMedicalRecordDoctor";
 
 import PatientDashboardLayout from "./components/patient/PatientDashboardLayout";
 import PatientRecordsView from "./components/patient/PatientRecordsView";
 import PatientProfileView from "./components/patient/PatientProfileView";
 import PatientProfileEdit from "./components/patient/PatientProfileEdit";
+
+import ScheduleAppointment from "./components/patient/ScheduleAppointment";
+import MyAppointments from "./components/patient/MyAppointments";
 
 function App() {
   return (
@@ -129,15 +132,13 @@ function App() {
           >
             <Route path="records" element={<PatientRecordsView />} />
             <Route path="profile" element={<PatientProfileView />} />
-            <Route path="profile/edit" element={<PatientProfileEdit />} />{" "}
-            {/* <-- Added */}
+            <Route path="profile/edit" element={<PatientProfileEdit />} />
+            <Route path="schedule-appointment" element={<ScheduleAppointment />} />
+            <Route path="my-appointments" element={<MyAppointments />} />
           </Route>
 
           {/* Other */}
-          <Route
-            path="/unauthorized"
-            element={<h2>403: Unauthorized Access</h2>}
-          />
+          <Route path="/unauthorized" element={<h2>403: Unauthorized Access</h2>} />
           <Route path="*" element={<h2>Page Not Found</h2>} />
         </Routes>
       </Router>

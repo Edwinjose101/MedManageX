@@ -3,9 +3,11 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
-const adminRoutes = require('./routes/adminRoutes'); // Admin routes
+const adminRoutes = require('./routes/adminRoutes'); 
 const doctorRoutes = require('./routes/doctorRoutes');
-const patientRoutes = require('./routes/patientRoutes'); // Add patient routes import
+const patientRoutes = require('./routes/patientRoutes'); 
+const appointmentRoutes = require("./routes/appointmentRoutes");
+const commonRoutes = require("./routes/commonRoutes");
 
 const app = express();
 
@@ -22,7 +24,9 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/doctor', doctorRoutes);
-app.use('/api/patient', patientRoutes); // Register patient routes
+app.use('/api/patient', patientRoutes); 
+app.use("/api/appointments", appointmentRoutes);
+app.use("/api", commonRoutes);
 
 // 404 handler for unmatched routes
 app.use((req, res) => {
