@@ -3,6 +3,7 @@ import axios from "../../api/axios";
 import { AuthContext } from "../../auth/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
+import DoctorAppointments from "./DoctorAppointments"; // Import the appointments component
 import "./DoctorPatients.css"; // Adjust or add your CSS accordingly
 
 const DoctorDashboard = () => {
@@ -185,9 +186,7 @@ const DoctorDashboard = () => {
           </>
         )}
 
-        {activeSection === "appointments" && (
-          <p>Appointments feature coming soon...</p>
-        )}
+        {activeSection === "appointments" && <DoctorAppointments />}
 
         {activeSection === "messages" && (
           <p>Messages & Alerts feature coming soon...</p>

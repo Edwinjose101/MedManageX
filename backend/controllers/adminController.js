@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const MedicalRecord = require("../models/MedicalRecord");
+const Appointment = require("../models/Appointment");
 
 // Get all users
 exports.getAllUsers = async (req, res) => {
@@ -22,7 +23,7 @@ exports.getPendingDoctors = async (req, res) => {
     res.json(pendingDoctors);
   } catch (err) {
     console.error("Error fetching pending doctors:", err);
-    res.status(500).send("Server error");
+    res.status(500).json({ msg: "Server error" });
   }
 };
 
@@ -39,7 +40,7 @@ exports.approveDoctor = async (req, res) => {
     res.json({ msg: "Doctor approved successfully" });
   } catch (err) {
     console.error("Error approving doctor:", err);
-    res.status(500).send("Server error");
+    res.status(500).json({ msg: "Server error" });
   }
 };
 
@@ -55,7 +56,7 @@ exports.rejectDoctor = async (req, res) => {
     res.json({ msg: "Doctor registration rejected and deleted" });
   } catch (err) {
     console.error("Error rejecting doctor:", err);
-    res.status(500).send("Server error");
+    res.status(500).json({ msg: "Server error" });
   }
 };
 
@@ -139,13 +140,11 @@ exports.updateMedicalRecordByAdmin = async (req, res) => {
     if (!record)
       return res.status(404).json({ msg: "Medical record not found" });
 
-    // Update fields if provided
     if (patientId) record.patientId = patientId;
     if (department) record.department = department;
     if (doctorId !== undefined) record.doctorId = doctorId; // can be null
     if (notes) record.notes = notes;
 
-    // Always set createdByRole to 'admin' for admin updates
     record.createdByRole = "admin";
 
     await record.save();
@@ -191,15 +190,9 @@ exports.getAllMedicalRecords = async (req, res) => {
     if (search.trim()) {
       query.notes = { $regex: search.trim(), $options: "i" };
     }
-    if (patientId) {
-      query.patientId = patientId;
-    }
-    if (doctorId) {
-      query.doctorId = doctorId;
-    }
-    if (department) {
-      query.department = department;
-    }
+    if (patientId) query.patientId = patientId;
+    if (doctorId) query.doctorId = doctorId;
+    if (department) query.department = department;
 
     const records = await MedicalRecord.find(query)
       .populate("patientId", "fullName")
@@ -214,5 +207,180 @@ exports.getAllMedicalRecords = async (req, res) => {
   } catch (err) {
     console.error("Error fetching medical records:", err);
     res.status(500).json({ msg: "Server error" });
+  }
+};
+
+// Appointment approval workflow methods
+
+// Get appointments with status "pending" for admin review
+exports.getPendingAppointments = async (req, res) => {
+  try {
+    const appointments = await Appointment.find({ status: "pending" })
+      .populate("patientId", "fullName email")
+      .populate("doctorId", "fullName specialty")
+      .sort({ date: 1, time: 1 });
+
+    res.json({ appointments });
+  } catch (err) {
+    console.error("Error fetching pending appointments:", err);
+    res
+      .status(500)
+      .json({ msg: "Server error fetching pending appointments." });
+  }
+};
+
+// Approve appointment (set status to "confirmed")
+exports.approveAppointment = async (req, res) => {
+  const appointmentId = req.params.id;
+  try {
+    const appointment = await Appointment.findById(appointmentId);
+    if (!appointment)
+      return res.status(404).json({ msg: "Appointment not found" });
+
+    if (appointment.status !== "pending")
+      return res.status(400).json({ msg: "Appointment is not pending" });
+
+    appointment.status = "confirmed";
+    await appointment.save();
+
+    res.json({ msg: "Appointment approved successfully", appointment });
+  } catch (err) {
+    console.error("Error approving appointment:", err);
+    res.status(500).json({ msg: "Server error while approving appointment." });
+  }
+};
+
+// Reject appointment (set status to "cancelled")
+exports.rejectAppointment = async (req, res) => {
+  const appointmentId = req.params.id;
+  try {
+    const appointment = await Appointment.findById(appointmentId);
+    if (!appointment)
+      return res.status(404).json({ msg: "Appointment not found" });
+
+    if (appointment.status !== "pending")
+      return res.status(400).json({ msg: "Appointment is not pending" });
+
+    appointment.status = "cancelled"; // Or use "rejected" if preferred
+    await appointment.save();
+
+    res.json({ msg: "Appointment rejected successfully", appointment });
+  } catch (err) {
+    console.error("Error rejecting appointment:", err);
+    res.status(500).json({ msg: "Server error while rejecting appointment." });
+  }
+};
+
+// New - Get appointment load dashboard data for admin
+exports.getAppointmentLoad = async (req, res) => {
+  try {
+    const pipeline = [
+      {
+        $group: {
+          _id: { doctorId: "$doctorId", date: "$date", status: "$status" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: { doctorId: "$_id.doctorId", date: "$_id.date" },
+          statusCounts: {
+            $push: { status: "$_id.status", count: "$count" },
+          },
+          total: { $sum: "$count" },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id.doctorId",
+          foreignField: "_id",
+          as: "doctor",
+        },
+      },
+      { $unwind: "$doctor" },
+      {
+        $project: {
+          doctorId: "$_id.doctorId",
+          doctorName: "$doctor.fullName",
+          date: "$_id.date",
+          total: 1,
+          pending: {
+            $sum: {
+              $map: {
+                input: "$statusCounts",
+                as: "sc",
+                in: {
+                  $cond: [{ $eq: ["$$sc.status", "pending"] }, "$$sc.count", 0],
+                },
+              },
+            },
+          },
+          confirmed: {
+            $sum: {
+              $map: {
+                input: "$statusCounts",
+                as: "sc",
+                in: {
+                  $cond: [
+                    { $eq: ["$$sc.status", "confirmed"] },
+                    "$$sc.count",
+                    0,
+                  ],
+                },
+              },
+            },
+          },
+          cancelled: {
+            $sum: {
+              $map: {
+                input: "$statusCounts",
+                as: "sc",
+                in: {
+                  $cond: [
+                    { $eq: ["$$sc.status", "cancelled"] },
+                    "$$sc.count",
+                    0,
+                  ],
+                },
+              },
+            },
+          },
+        },
+      },
+      { $sort: { date: 1, doctorName: 1 } },
+    ];
+
+    const appointmentLoad = await Appointment.aggregate(pipeline);
+
+    // Calculate summary totals
+    const totalsPipeline = [
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+    ];
+    const totalsResults = await Appointment.aggregate(totalsPipeline);
+
+    const summary = {
+      totalAppointments: 0,
+      pending: 0,
+      confirmed: 0,
+      cancelled: 0,
+    };
+
+    totalsResults.forEach((item) => {
+      summary.totalAppointments += item.count;
+      if (item._id === "pending") summary.pending = item.count;
+      else if (item._id === "confirmed") summary.confirmed = item.count;
+      else if (item._id === "cancelled") summary.cancelled = item.count;
+    });
+
+    res.json({ summary, appointmentLoad });
+  } catch (err) {
+    console.error("Error in getAppointmentLoad:", err);
+    res.status(500).json({ msg: "Server error getting appointment load" });
   }
 };

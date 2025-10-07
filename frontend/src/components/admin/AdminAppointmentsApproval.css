@@ -1,0 +1,105 @@
+.admin-appointments-approval {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 36px 32px;
+  background: #ffffffef;
+  border-radius: 18px;
+  box-shadow: 0 6px 36px 0 rgba(30,60,90,0.09), 0 1.5px 4px 0 rgba(80,100,140,0.06);
+}
+
+.admin-appointments-approval h2 {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #23489b;
+  margin-bottom: 28px;
+  letter-spacing: -0.5px;
+}
+
+.appointment-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #f5f9fe;
+  margin-top: 12px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px #ecf1fa;
+}
+
+.appointment-table th, .appointment-table td {
+  padding: 16px 12px;
+  border: none;
+  text-align: left;
+  font-size: 1.06rem;
+}
+
+.appointment-table th {
+  background: #ecf4ff;
+  color: #233c5a;
+  font-weight: 700;
+}
+
+.appointment-table tbody tr {
+  background: #fff;
+  transition: background 0.16s;
+}
+
+.appointment-table tbody tr:not(:last-child) {
+  border-bottom: 1.5px solid #eef5fa;
+}
+
+.appointment-table tbody tr:hover {
+  background: #eaf3fc;
+}
+
+.action-btn {
+  border: none;
+  outline: none;
+  padding: 8px 20px;
+  font-weight: 600;
+  font-size: 1.04rem;
+  border-radius: 7px;
+  margin-right: 10px;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s;
+  box-shadow: 0 2px 12px #e6eefb99;
+}
+
+.action-btn.approve {
+  background-color: #0b4d3e; /* dark green */
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 3px 8px rgba(11, 77, 62, 0.5);
+  transition: background-color 0.3s ease;
+}
+
+.action-btn.approve:hover {
+  background-color: #06392a; /* even darker green */
+}
+
+.action-btn.reject {
+  background-color: #7a1e25; /* dark red */
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 3px 8px rgba(122, 30, 37, 0.5);
+  transition: background-color 0.3s ease;
+}
+
+.action-btn.reject:hover {
+  background-color: #4f1319; /* even darker red */
+}
+
+.message {
+  margin-bottom: 18px;
+  margin-top: 6px;
+  font-weight: 700;
+  font-size: 1.10rem;
+}
+
+.message.error {
+  color: #e53e3e;
+}
+
+.message.success {
+  color: #218838;
+}

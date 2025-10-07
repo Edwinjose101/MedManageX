@@ -25,6 +25,8 @@ import PatientProfileEdit from "./components/patient/PatientProfileEdit";
 
 import ScheduleAppointment from "./components/patient/ScheduleAppointment";
 import MyAppointments from "./components/patient/MyAppointments";
+import AdminAppointmentsApproval from "./components/admin/AdminAppointmentsApproval";
+import AdminAppointmentDashboard from "./components/admin/AdminAppointmentDashboard";
 
 function App() {
   return (
@@ -51,6 +53,14 @@ function App() {
             element={
               <ProtectedRoute requiredRole="admin">
                 <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/appointments-approval"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminAppointmentsApproval />
               </ProtectedRoute>
             }
           />
@@ -86,6 +96,10 @@ function App() {
               </ProtectedRoute>
             }
           />
+          
+          <Route
+            path="/admin/appointment-load"
+            element={<AdminAppointmentDashboard />} />
 
           {/* Doctor */}
           <Route
@@ -133,12 +147,18 @@ function App() {
             <Route path="records" element={<PatientRecordsView />} />
             <Route path="profile" element={<PatientProfileView />} />
             <Route path="profile/edit" element={<PatientProfileEdit />} />
-            <Route path="schedule-appointment" element={<ScheduleAppointment />} />
+            <Route
+              path="schedule-appointment"
+              element={<ScheduleAppointment />}
+            />
             <Route path="my-appointments" element={<MyAppointments />} />
           </Route>
 
           {/* Other */}
-          <Route path="/unauthorized" element={<h2>403: Unauthorized Access</h2>} />
+          <Route
+            path="/unauthorized"
+            element={<h2>403: Unauthorized Access</h2>}
+          />
           <Route path="*" element={<h2>Page Not Found</h2>} />
         </Routes>
       </Router>

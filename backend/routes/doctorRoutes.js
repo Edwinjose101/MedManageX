@@ -3,6 +3,7 @@ const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
 const doctorController = require("../controllers/doctorController");
+const appointmentController = require("../controllers/appointmentController");
 
 router.use(authMiddleware);
 router.use(roleMiddleware(["doctor"]));
@@ -10,6 +11,10 @@ router.use(roleMiddleware(["doctor"]));
 router.get("/patients", doctorController.getMyPatients);
 router.get("/patients/:id/records", doctorController.getPatientRecords);
 router.post("/patients/:id/records", doctorController.addMedicalRecord);
+
+
+router.get("/appointments", appointmentController.getMyAppointments);
+router.patch("/appointments/:id/status",appointmentController.updateAppointmentStatus);
 
 // Update medical record - doctor can only update own records
 router.put("/medical-records/:id", doctorController.updateMedicalRecord);
