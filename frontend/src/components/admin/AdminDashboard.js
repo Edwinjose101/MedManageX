@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../auth/context/AuthContext";
-import { LogOut } from "lucide-react";
+import { LogOut, Users, Stethoscope, Calendar, FileText, Activity } from "lucide-react";
 import axios from "../../api/axios";
 
 const AdminDashboard = () => {
@@ -9,6 +9,8 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
 
   const [pendingCount, setPendingCount] = useState(0);
+  const [doctorsCount, setDoctorsCount] = useState(0);
+  const [medicalRecordsCount, setMedicalRecordsCount] = useState(0);
 
   const handleLogout = () => {
     logout();
@@ -16,343 +18,209 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    const fetchPendingCount = async () => {
+    const fetchDashboardData = async () => {
       try {
-        const response = await axios.get("/admin/appointments/load");
-        setPendingCount(response.data.summary?.pending ?? 0);
+        const [appointmentsRes, doctorsRes] = await Promise.all([
+          axios.get("/admin/appointments/load"),
+          axios.get("/admin/doctors"),
+        ]);
+        
+        setPendingCount(appointmentsRes.data.summary?.pending ?? 0);
+        setDoctorsCount(doctorsRes.data.length ?? 0);
+        setMedicalRecordsCount(0);
       } catch (error) {
-        console.error("Error fetching pending appointments count:", error);
+        console.error("Error fetching dashboard data:", error);
         setPendingCount(0);
+        setDoctorsCount(0);
+        setMedicalRecordsCount(0);
       }
     };
-    fetchPendingCount();
+    fetchDashboardData();
   }, []);
 
-  const navLinkStyle = {
-    fontWeight: "500",
-    padding: "8px 12px",
-    borderRadius: "6px",
-    display: "block",
-    textDecoration: "none",
-    marginBottom: "1rem",
-    color: "#374151",
-    transition: "background-color 0.2s ease",
-  };
+  const navItems = [
+    {
+      path: "/admin/manage-doctors",
+      label: "Manage Doctors",
+      icon: <Stethoscope size={18} />,
+    },
+    {
+      path: "/admin/appointments-approval",
+      label: "Approve Appointments",
+      icon: <Calendar size={18} />,
+    },
+    {
+      path: "/admin/appointment-load",
+      label: "Appointment Dashboard",
+      icon: <Users size={18} />,
+    },
+    {
+      path: "/admin/patients",
+      label: "Medical Records",
+      icon: <FileText size={18} />,
+    },
+    {
+      path: "/admin/add-medical-record",
+      label: "Add Medical Record",
+      icon: <FileText size={18} />,
+    },
+  ];
 
-  const activeStyle = {
-    backgroundColor: "#2563eb",
-    color: "white",
-    fontWeight: "700",
-  };
+  const quickActions = [
+    {
+      label: "Manage Doctors",
+      path: "/admin/manage-doctors",
+      icon: <Stethoscope size={20} />,
+    },
+    {
+      label: "Approve Appointments",
+      path: "/admin/appointments-approval",
+      icon: <Calendar size={20} />,
+    },
+    {
+      label: "Appointment Dashboard",
+      path: "/admin/appointment-load",
+      icon: <Activity size={20} />,
+    },
+    {
+      label: "Add Medical Record",
+      path: "/admin/add-medical-record",
+      icon: <FileText size={20} />,
+    },
+  ];
 
   return (
-    <div className="admin-dashboard-container" style={{ display: "flex" }}>
+    <div className="admin-dashboard">
       {/* Sidebar Navigation */}
-      <aside
-        className="sidebar"
-        style={{
-          width: "220px",
-          padding: "20px",
-          backgroundColor: "#f7f9fc",
-          borderRight: "1px solid #ddd",
-          height: "100vh",
-          position: "fixed",
-        }}
-      >
-        <h2
-          style={{
-            fontSize: "1.5rem",
-            marginBottom: "1.5rem",
-            fontWeight: "600",
-            color: "#3f51b5",
-          }}
-        >
-          Hospital Admin
-        </h2>
-        <nav>
-          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-            {/* Sidebar items */}
-            <li>
-              <NavLink
-                to="/dashboard"
-                style={({ isActive }) =>
-                  isActive ? { ...navLinkStyle, ...activeStyle } : navLinkStyle
-                }
-              >
-                Overview
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/patients"
-                style={({ isActive }) =>
-                  isActive ? { ...navLinkStyle, ...activeStyle } : navLinkStyle
-                }
-              >
-                Manage Patients
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/admin/manage-doctors"
-                style={({ isActive }) =>
-                  isActive ? { ...navLinkStyle, ...activeStyle } : navLinkStyle
-                }
-              >
-                Manage Doctors
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/admin/appointments-approval"
-                style={({ isActive }) =>
-                  isActive
-                    ? {
-                        ...navLinkStyle,
-                        ...activeStyle,
-                        fontWeight: "bold",
-                        color: "white",
-                      }
-                    : { ...navLinkStyle, fontWeight: "bold", color: "#2563eb" }
-                }
-              >
-                Approve Appointments
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/departments"
-                style={({ isActive }) =>
-                  isActive ? { ...navLinkStyle, ...activeStyle } : navLinkStyle
-                }
-              >
-                Departments & Wards
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/billing"
-                style={({ isActive }) =>
-                  isActive ? { ...navLinkStyle, ...activeStyle } : navLinkStyle
-                }
-              >
-                Billing
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/reports"
-                style={({ isActive }) =>
-                  isActive ? { ...navLinkStyle, ...activeStyle } : navLinkStyle
-                }
-              >
-                Reports
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/admin/appointment-load"
-                style={({ isActive }) =>
-                  isActive
-                    ? {
-                        ...navLinkStyle,
-                        ...activeStyle,
-                        fontWeight: "bold",
-                        color: "white",
-                      }
-                    : { ...navLinkStyle, fontWeight: "bold", color: "#2563eb" }
-                }
-              >
-                Appointment Load Dashboard
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/settings"
-                style={({ isActive }) =>
-                  isActive ? { ...navLinkStyle, ...activeStyle } : navLinkStyle
-                }
-              >
-                Settings
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/admin/patients"
-                style={({ isActive }) =>
-                  isActive
-                    ? {
-                        ...navLinkStyle,
-                        ...activeStyle,
-                        fontWeight: "bold",
-                        color: "white",
-                      }
-                    : { ...navLinkStyle, fontWeight: "bold", color: "#2563eb" }
-                }
-              >
-                Medical Records Overview
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/admin/add-medical-record"
-                style={({ isActive }) =>
-                  isActive
-                    ? {
-                        ...navLinkStyle,
-                        ...activeStyle,
-                        fontWeight: "bold",
-                        color: "white",
-                      }
-                    : { ...navLinkStyle, fontWeight: "bold", color: "#2563eb" }
-                }
-              >
-                Add Medical Record
-              </NavLink>
-            </li>
+      <aside className="admin-sidebar">
+        <div className="sidebar-header">
+          <h2 className="sidebar-title">
+            <div className="hospital-logo">H</div>
+            Hospital Admin
+          </h2>
+        </div>
+        
+        <nav className="sidebar-nav">
+          <ul className="nav-list">
+            {navItems.map((item) => (
+              <li key={item.path} className="nav-item">
+                <NavLink
+                  to={item.path}
+                  className={({ isActive }) =>
+                    `nav-link ${isActive ? "nav-link-active" : ""}`
+                  }
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </NavLink>
+              </li>
+            ))}
           </ul>
         </nav>
       </aside>
 
       {/* Main Content Area */}
-      <main
-        className="main-content"
-        style={{ flexGrow: 1, marginLeft: "220px", padding: "24px" }}
-      >
-        {/* Topbar / Header */}
-        <header
-          className="header"
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "2rem",
-          }}
-        >
-          <h1>Dashboard Overview</h1>
-
-          {/* Logout button */}
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            {user && (
-              <span>
-                Welcome, <strong>{user.fullName}</strong>
-              </span>
-            )}
-            <button
-              onClick={handleLogout}
-              className="flex items-center bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition space-x-2"
-              style={{ display: "flex", alignItems: "center" }}
-            >
-              <LogOut size={16} />
-              <span>Logout</span>
-            </button>
+      <main className="admin-main">
+        {/* Header */}
+        <header className="admin-header">
+          <div className="header-content">
+            <div className="header-title">
+              <h1>Admin Dashboard</h1>
+              <p>Welcome back, manage your hospital efficiently</p>
+            </div>
+            
+            <div className="header-actions">
+              {user && (
+                <div className="user-welcome">
+                  <p className="welcome-text">Welcome</p>
+                  <p className="user-name">{user.fullName}</p>
+                </div>
+              )}
+              <button
+                onClick={handleLogout}
+                className="logout-btn"
+              >
+                <LogOut size={18} />
+                <span>Logout</span>
+              </button>
+            </div>
           </div>
         </header>
 
         {/* Overview Tiles */}
-        <section
-          className="overview-tiles"
-          style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}
-        >
-          <div
-            className="tile"
-            style={{
-              flex: "1 1 200px",
-              background: "#fff",
-              padding: "1rem",
-              borderRadius: "12px",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-              color: "#21325e",
-            }}
-          >
-            <h3>Total Patients</h3>
-            <p>1,234</p>
+        <section className="dashboard-tiles">
+          <div className="tile tile-blue">
+            <div className="tile-content">
+              <div>
+                <p className="tile-label">Pending Appointments</p>
+                <p className="tile-value">{pendingCount}</p>
+              </div>
+              <div className="tile-icon">
+                <Calendar className="icon" size={24} />
+              </div>
+            </div>
           </div>
-          <div
-            className="tile"
-            style={{
-              flex: "1 1 200px",
-              background: "#fff",
-              padding: "1rem",
-              borderRadius: "12px",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-              color: "#21325e",
-            }}
-          >
-            <h3>Total Doctors</h3>
-            <p>56</p>
-          </div>
-          <div
-            className="tile"
-            style={{
-              flex: "1 1 200px",
-              background: "#fff",
-              padding: "1rem",
-              borderRadius: "12px",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-              color: "#21325e",
-            }}
-          >
-            <h3>Upcoming Appointments</h3>
-            <p>{pendingCount}</p>
-          </div>
-          <div
-            className="tile"
-            style={{
-              flex: "1 1 200px",
-              background: "#fff",
-              padding: "1rem",
-              borderRadius: "12px",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-              color: "#21325e",
-            }}
-          >
-            <h3>Available Wards</h3>
-            <p>15</p>
-          </div>
-        </section>
 
-        {/* Recent Activities or Notifications */}
-        <section className="recent-activities" style={{ marginTop: "2rem" }}>
-          <h2>Recent Activities</h2>
-          {/* List recent user actions, approvals, alerts */}
+          <div className="tile tile-green">
+            <div className="tile-content">
+              <div>
+                <p className="tile-label">Total Doctors</p>
+                <p className="tile-value">{doctorsCount}</p>
+              </div>
+              <div className="tile-icon">
+                <Stethoscope className="icon" size={24} />
+              </div>
+            </div>
+          </div>
+
+          <div className="tile tile-purple">
+            <div className="tile-content">
+              <div>
+                <p className="tile-label">Medical Records</p>
+                <p className="tile-value">{medicalRecordsCount}</p>
+              </div>
+              <div className="tile-icon">
+                <FileText className="icon" size={24} />
+              </div>
+            </div>
+          </div>
+
+          <div className="tile tile-orange">
+            <div className="tile-content">
+              <div>
+                <p className="tile-label">System Status</p>
+                <p className="tile-status">Operational</p>
+              </div>
+              <div className="tile-icon">
+                <div className="status-indicator"></div>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Quick Actions */}
-        <section
-          className="quick-actions"
-          style={{ marginTop: "2rem", display: "flex", gap: "1rem" }}
-        >
-          <button
-            onClick={() => navigate("/patients")}
-            style={{ padding: "0.5rem 1rem", cursor: "pointer" }}
-          >
-            Add New Patient
-          </button>
-          <button
-            onClick={() => navigate("/admin/manage-doctors")}
-            style={{ padding: "0.5rem 1rem", cursor: "pointer" }}
-          >
-            Add New Doctor
-          </button>
-          <button
-            onClick={() => navigate("/appointments")}
-            style={{ padding: "0.5rem 1rem", cursor: "pointer" }}
-          >
-            Schedule Appointment
-          </button>
-          <button
-            onClick={() => navigate("/admin/add-medical-record")}
-            style={{
-              padding: "0.5rem 1rem",
-              backgroundColor: "#2563eb",
-              color: "white",
-              cursor: "pointer",
-              fontWeight: "bold",
-            }}
-          >
-            Add Medical Record
-          </button>
+        <section className="quick-actions-section">
+          <h2 className="section-title">Quick Actions</h2>
+          <div className="quick-actions-grid">
+            {quickActions.map((action, index) => (
+              <button
+                key={index}
+                onClick={() => navigate(action.path)}
+                className="quick-action-btn"
+              >
+                {action.icon}
+                <span>{action.label}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Recent Activity Placeholder */}
+        <section className="recent-activity">
+          <h2 className="section-title">Recent Activity</h2>
+          <div className="activity-placeholder">
+            <p>No recent activity to display</p>
+          </div>
         </section>
       </main>
     </div>
